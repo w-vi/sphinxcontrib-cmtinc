@@ -1,26 +1,23 @@
-.. -*- restructuredtext -*-
 
 ========================================================
 Include comments form source files  extension for Sphinx
 ========================================================
 
-:author: Vilibald W. <vilibald@wvi.cz>
-
 About
 =====
 
 This extension allows to extract valid Sphinx_ formatted comments from source
-files.  It extract any comment starting with ``/**`` double star as is usual
+files.  It extracts any comment starting with ``/**`` double star as is usual
 with (java/js/doxygen) doc style comments. It goes through the whole file and
-grabs whatever comment it finds.
+grabs whatever valid comment it finds.
 
 This extension adds the ``include-comment`` directive that automatically
-extracts the comments begginng and creates valid entries for the Sphinx_ writer
+extracts the comments and creates valid entries for the Sphinx_ writer
 used to generate the documentation.
 
 You can see the latest documentation at the `sphinxcontrib-cmtinc  website`__.
 
-__ http://packages.python.org/sphinxcontrib-cmtinc/
+__ http://wvi.cz/sphinxcontrib-cmtinc/
 
 Download
 ========
@@ -64,30 +61,34 @@ file. For example::
 Usage
 =====
 
-`` .. include-comment:: <file>``
+``.. include-comment:: <file>``
 
 This will extract any comments starting with ``/**`` in the file ``<file>``.
 
+.. highlight:: c
+
 Example c header.h::
 
-  /**
+
+    /**
       .. c:type:: my_struct_t
 
-	  This is a struct for holding values.
-  */
-  typedef struct my_struct_s
-  {
-       int id;
-       struct timeval t; 
-       void *value;
-   } my_struct_t;
+      This is a struct for holding values.
+    */
+    typedef struct my_struct_s
+    {
+        int id;
+        struct timeval t; 
+        void *value;
+     }  my_struct_t;
 
-   /**
-   .. c:function:: my_struct_t * connect(my_struct_t * m, const char *url)
+    /**
+     .. c:function:: my_struct_t * connect(my_struct_t * m, const char *url)
  
-      Connect the client to the server given by *url*.
-   */
-   my_struct_t * connect(my_struct_t * m, const char *url);
+     Connect the client to the server given by *url*.
+
+    */
+    my_struct_t * connect(my_struct_t * m, const char *url);
 
 .. include-comment:: ../README
 
