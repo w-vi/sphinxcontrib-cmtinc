@@ -12,7 +12,7 @@ comment-include is a reStructuredText_ directive to allow extraction of rst form
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 
 This extension adds the ``include-comment`` directive that automatically extracts 
-the comments begining with '/**'' and creates valid entries
+the comments begining with ``/**`` and creates valid entries
 for the Sphinx_ writer used to generate the documentation.
 
 Usage example::
