@@ -13,14 +13,74 @@
 
 import posixpath
 import codecs
+import re
 from os import path
-
 from docutils import nodes
 from sphinx.util.nodes import nested_parse_with_titles
 from docutils.statemachine import ViewList
 from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive
-import extractor
+
+re_comment = re.compile("^\s?/\*\*\**(.*)$")
+re_cmtnext = re.compile("^[/\* | \*]?\**(.*)$")
+re_cmtend = re.compile("(.*)(\*/)+$")
+
+class ExtractError(Exception):
+    pass
+
+class Extractor(object):
+    """
+    Main extraction class
+    """
+    
+    def __init__(self):
+        """
+        """    
+        self.content = ViewList("",'comment')
+        self.lineno = 0
+
+    def extract(self, source):
+        """
+        Process the source file and fill in the content.
+        SOURCE is a fileobject.
+        """
+        for l in source:
+            self.lineno = self.lineno + 1
+            l = l.strip()
+            m = re_comment.match(l)
+            if m:
+                self.comment(m.group(1), source)
+        
+    
+    def comment(self, cur, source):
+        """
+        Read the whole comment and strip the stars.
+
+        CUR is currently read line and SOURCE is a fileobject 
+        with the source code.
+        """
+        self.content.append(cur.rstrip(), "comment")
+
+        for cur in source:
+            self.lineno = self.lineno + 1
+
+            if cur.startswith("/*"):
+                raise ExtractError("%d: Nested comments are not supported yet."
+                                   % self.lineno)
+
+            if re_cmtend.match(cur):
+                break
+            
+            m = re_cmtnext.match(cur)
+            if m:
+                self.content.append(m.group(1).rstrip(), "comment")
+                continue
+
+            self.content.append(cur, "comment")
+
+
+        self.content.append('\n', "comment")
+
 
 class CmtIncDirective(Directive):
     """
@@ -44,27 +104,28 @@ class CmtIncDirective(Directive):
             rel_filename, filename = self.env.relfn2path(self.arguments[0])
             self.env.note_dependency(rel_filename)
             
-            extr = extractor.Extractor()
+            extr = Extractor()
             f = None
             try:
-                encoding = self.options.get('encoding', self.env.config.source_encoding)
-                codec_info = codecs.lookup(encoding)
-                f = codecs.StreamReaderWriter(open(filename, 'rb'),
-                                                  codec_info[2], codec_info[3], 'strict')
+                encoding = self.options.get('encoding', 
+                                            self.env.config.source_encoding)
+                codecinfo = codecs.lookup(encoding)
+                f = codecs.StreamReaderWriter(
+                    open(filename, 'rb'), codecinfo[2], codecinfo[3], 'strict')
                 extr.extract(f)
             except (IOError, OSError):
-                return [document.reporter.warning(
+                return [self.reporter.warning(
                     'Include file %r not found or reading it failed' % filename,
                     line=self.lineno)]
             except UnicodeError:
-                return [document.reporter.warning(
+                return [self.reporter.warning(
                     'Encoding %r used for reading included file %r seems to '
                     'be wrong, try giving an :encoding: option' %
                     (encoding, filename))]
-            except (extractor.ExtractError):
-                return [self.reporter.error(
-                    'External file %r not found or reading '
-                    'failed' % filename, line=self.lineno)]
+            except ExtractError as e:
+                return [self.reporter.warning(
+                    'Parsing error in %s : %s' %(filename, str(e)), 
+                    line=self.lineno)]
             finally:
                 if f is not None:
                     f.close()
@@ -83,3 +144,20 @@ class CmtIncDirective(Directive):
 def setup(app):
     app.add_directive('include-comment', CmtIncDirective)
 
+
+if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) < 2:
+        print("Usage: cmtinc.py <file.c|cpp|h>")
+        exit(1)
+
+    ext = Extractor()
+    try:
+        with open(sys.argv[1], 'r') as f:
+            ext.extract(f)
+    except ExtractError as e:
+        print('Extraction error in external source file %r : %s'
+                    % (sys.argv[1], str(e)))
+    for line in ext.content:
+        print(line)

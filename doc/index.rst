@@ -1,6 +1,6 @@
 .. This is the main documentation to use as a simple website.
 
-.. include:: ../README
+.. include:: ../README.rst
 
 
 ChangeLog

@@ -1,4 +1,3 @@
-
 ========================================================
 Include comments form source files  extension for Sphinx
 ========================================================
@@ -15,9 +14,9 @@ This extension adds the ``include-comment`` directive that automatically
 extracts the comments and creates valid entries for the Sphinx_ writer
 used to generate the documentation.
 
-You can see the latest documentation at the `sphinxcontrib-cmtinc  website`__.
+You can see the latest documentation at the `sphinxcontrib-cmtinc website`__.
 
-__ http://wvi.cz/sphinxcontrib-cmtinc/
+__ http://packages.python.org/sphinxcontrib-cmtinc/
 
 Download
 ========
@@ -65,9 +64,9 @@ Usage
 
 This will extract any comments starting with ``/**`` in the file ``<file>``.
 
-.. highlight:: c
+Example c header.h
 
-Example c header.h::
+.. code-block:: c
 
 
     /**
@@ -90,7 +89,7 @@ Example c header.h::
     */
     my_struct_t * connect(my_struct_t * m, const char *url);
 
-.. include-comment:: ../README.txt
+.. include-comment:: ../README.rst
 
 
 Configuration
@@ -111,3 +110,6 @@ TODO
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _PyPI: http://pypi.python.org/pypi
 
+
+:copyright: Copyright 2014 by Vilibald W.
+:license: BSD, see LICENSE.txt for details.
