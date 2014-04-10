@@ -90,7 +90,7 @@ Example c header.h::
     */
     my_struct_t * connect(my_struct_t * m, const char *url);
 
-.. include-comment:: ../README
+.. include-comment:: ../README.txt
 
 
 Configuration
