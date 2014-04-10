@@ -3,36 +3,35 @@
 from setuptools import setup, find_packages
 
 long_desc = '''
-This package contains a c/c++ comment extractor _Sphinx_ extension.
+This package contains a comment extractor _Sphinx_ extension.
 
-.. _c-include: http://wvi.cz/c-include
 .. _Sphinx: http://sphinx.pocoo.org/
 
-c-include_ is a reStructuredText_ directive to allow extraction of rst formatted comments from c/c++
+comment-include is a reStructuredText_ directive to allow extraction of rst formatted comments from 
 source files.
 
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 
-This extension adds the ``c-include`` directive that automatically extracts 
+This extension adds the ``include-comment`` directive that automatically extracts 
 the comments begginng with '/**'' and creates valid entries
 for the Sphinx_ writer used to generate the documentation.
 
 Usage example::
 
-    .. c-include:: file.c
+    .. include-comment:: file.h
 '''
 
-requires = ['Sphinx>=0.6']
+requires = ['Sphinx>=1.0']
 
 setup(
-    name='sphinxcontrib-c-include',
+    name='sphinxcontrib-cmtinc',
     version='0.1',
-    url='http://packages.python.org/sphinxcontrib-c-include/',
-    download_url='http://pypi.python.org/pypi/sphinxcontrib-c-include',
+    url='http://packages.python.org/sphinxcontrib-cmtinc/',
+    download_url='http://pypi.python.org/pypi/sphinxcontrib-cmtinc',
     license='MIT',
     author='Vilibald W.',
     author_email='vilibald@wvi.cz',
-    description='Include C/C++ source comments Sphinx extension',
+    description='Include source comments Sphinx extension',
     long_description=long_desc,
     zip_safe=False,
     classifiers=[

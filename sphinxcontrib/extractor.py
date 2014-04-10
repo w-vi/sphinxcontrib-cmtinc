@@ -18,7 +18,8 @@ class Extractor(object):
     def __init__(self):
         """
         """    
-        self.content = ViewList("",'c')
+        self.content = ViewList("",'comment')
+        self.lineno = 0
 
     def extract(self, source):
         """
@@ -26,6 +27,7 @@ class Extractor(object):
         SOURCE is a fileobject.
         """
         for l in source:
+            self.lineno = self.lineno + 1
             l = l.strip()
             m = re_comment.match(l)
             if m:
@@ -37,37 +39,27 @@ class Extractor(object):
         Read the whole comment and strip the stars.
         CUR is currently read line and SOURCE is a fileobject with the source code.
         """
-        cmt = ""
-        m = re_cmtend.match(cur)
-        if m:
-            cmt = cmt +  m.group(0)
-        else:
-            cmt = cmt +  cur
+        if(cur != ""):
+            self.content.append(cur.rstrip(), "comment")
 
         for cur in source:
-            cur = cur.strip()
-            if cur == '':
-                continue
+            self.lineno = self.lineno + 1
 
             if cur.startswith("/*"):
-                raise ExtractError("Nested comments are not supported yet.")
+                raise ExtractError("%d: Nested comments are not supported yet." % self.lineno)
 
             if re_cmtend.match(cur):
                 break
             
             m = re_cmtnext.match(cur)
             if m:
-                print(m.group(1))
-                cmt  = cmt + m.group(1)
-            
-        self.content.append(cmt, "c")
+                self.content.append(m.group(1).rstrip(), "comment")
+                continue
+
+            self.content.append(cur, "comment")
 
 
-    def printrst(self):
-        """
-        Print the sphinx rst to stdout.
-        """
-        print(self.content)
+        self.content.append('\n', "comment")
 
 if __name__ == '__main__':
     import sys
@@ -76,14 +68,14 @@ if __name__ == '__main__':
         print("Usage: extractor.py <file.c|cpp|h>")
         exit(1)
 
-    extractor = Extractor()
+    ext = Extractor()
     try:
         with open(sys.argv[1], 'r') as f:
-            extractor.extract(f)
+            ext.extract(f)
     except ExtractError as e:
         print('Extraction error in external source file %r : %s'
                     % (sys.argv[1], str(e)))
-    extractor.printrst()
-    
+    for line in ext.content:
+        print(line)
 
     

@@ -22,7 +22,7 @@ sys.path.append(os.path.abspath('..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinxcontrib.aafig']
+extensions = ['sphinxcontrib.cmtinc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -37,15 +37,15 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'sphinxcontrib-aafig'
-copyright = u'2009, Leandro Lucarella'
+project = u'sphinxcontrib-cmtinc'
+copyright = u'2014, Vilibald W.'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '1.0'
+version = '0.1'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -158,7 +158,7 @@ html_static_path = ['_static']
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'sphinxcontrib-aafigdoc'
+htmlhelp_basename = 'sphinxcontrib-cmtincdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -172,8 +172,8 @@ htmlhelp_basename = 'sphinxcontrib-aafigdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'sphinxcontrib-aafig.tex', u'sphinxcontrib-aafig Documentation',
-   u'Leandro Lucarella', 'howto'),
+  ('index', 'sphinxcontrib-cmtinc.tex', u'sphinxcontrib-cmtinc Documentation',
+   u'Vilibald W.', 'howto'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
