@@ -37,7 +37,7 @@ setup(
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Console',
         'Environment :: Web Environment',
-        'Intendexsd Audience :: Developers',
+        'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',

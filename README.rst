@@ -48,6 +48,15 @@ files and installing as described above or using:
 easy_install -U sphinxcontrib-cmtinc
 
 
+Directly from Git repo
+----------------------
+
+Of course it is also possible to build it directly from the
+source. The git repo is hosted on
+https://bitbucket.org/wvi/sphinxcontrib-cmtinc and any input
+is welcome.
+
+
 Enabling the extension in Sphinx_
 ---------------------------------
 
