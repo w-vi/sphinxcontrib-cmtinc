@@ -59,24 +59,29 @@ class Extractor(object):
         CUR is currently read line and SOURCE is a fileobject 
         with the source code.
         """
-        self.content.append(cur.rstrip(), "comment")
+        self.content.append(cur.strip(), "comment")
 
-        for cur in source:
+        for line in source:
             self.lineno = self.lineno + 1
+            line = line.strip()
 
-            if cur.startswith("/*"):
+            if re_cmtend.match(line):
+                break
+
+            if line.startswith("/*"):
                 raise ExtractError("%d: Nested comments are not supported yet."
                                    % self.lineno)
 
-            if re_cmtend.match(cur):
-                break
-            
-            m = re_cmtnext.match(cur)
-            if m:
-                self.content.append(m.group(1).rstrip(), "comment")
+            if line.startswith(".. "):
+                self.content.append(line, "comment")
                 continue
 
-            self.content.append(cur, "comment")
+            m = re_cmtnext.match(line)
+            if m:
+                self.content.append("    " + m.group(1).strip(), "comment")
+                continue
+
+            self.content.append(line, "comment")
 
 
         self.content.append('\n', "comment")
