@@ -1,5 +1,5 @@
 ========================================================
-Include comments form source files extension for Sphinx
+Include comments from source files extension for Sphinx
 ========================================================
 
 About
