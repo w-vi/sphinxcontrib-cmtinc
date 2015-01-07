@@ -1,5 +1,5 @@
 ========================================================
-Include comments form source files  extension for Sphinx
+Include comments form source files extension for Sphinx
 ========================================================
 
 About
@@ -53,7 +53,7 @@ Directly from Git repo
 
 Of course it is also possible to build it directly from the
 source. The git repo is hosted on
-https://bitbucket.org/wvi/sphinxcontrib-cmtinc and any input
+https://github.com/w-vi/sphinxcontrib-cmtinc and any input
 is welcome.
 
 
