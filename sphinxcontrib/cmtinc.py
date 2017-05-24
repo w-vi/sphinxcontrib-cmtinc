@@ -11,33 +11,33 @@
     :license: MIT, see LICENSE for details
 """
 
-import posixpath
 import codecs
 import re
-from os import path
 from docutils import nodes
 from sphinx.util.nodes import nested_parse_with_titles
 from docutils.statemachine import ViewList
-from docutils.parsers.rst import directives
-from sphinx.util.compat import Directive
+from docutils.parsers.rst import Directive
 
 re_comment = re.compile("^\s?/\*\*\**(.*)$")
 re_cmtnext = re.compile("^[/\* | \*]?\**(.*)$")
 re_cmtend = re.compile("(.*)(\*/)+$")
 
+
 class ExtractError(Exception):
     pass
+
 
 class Extractor(object):
     """
     Main extraction class
     """
+
     def __init__(self):
         """
         """
-        self.content = ViewList("",'comment')
+        self.content = ViewList("", 'comment')
         self.lineno = 0
-        self.is_multiline = False;
+        self.is_multiline = False
 
     def extract(self, source):
         """
@@ -51,7 +51,6 @@ class Extractor(object):
 
             if (m):
                 self.comment(m.group(1), source)
-
 
     def comment(self, cur, source):
         """
@@ -70,13 +69,15 @@ class Extractor(object):
                 if (not self.is_multiline):
                     break
                 else:
-                    continue;
+                    continue
 
             if line.startswith("/*"):
                 if (not self.is_multiline):
-                    raise ExtractError("%d: Nested comments are not supported yet." % self.lineno)
+                    raise ExtractError(
+                        "%d: Nested comments are not supported yet." %
+                        self.lineno)
                 else:
-                    continue;
+                    continue
 
             if line.startswith(".. "):
                 self.content.append(line, "comment")
@@ -100,7 +101,6 @@ class Extractor(object):
 
             self.content.append(line.strip(), "comment")
 
-
         self.content.append('\n', "comment")
 
 
@@ -112,7 +112,7 @@ class CmtIncDirective(Directive):
     required_arguments = 1
     optional_arguments = 0
     final_argument_whitespace = False
-    option_spec = { }
+    option_spec = {}
 
     def run(self):
         """Run it """
@@ -120,9 +120,12 @@ class CmtIncDirective(Directive):
         self.env = self.state.document.settings.env
         if self.arguments:
             if self.content:
-                return [self.reporter.warning(
-                    'include-comment directive cannot have content only '
-                    'a filename argument', line=self.lineno)]
+                return [
+                    self.reporter.warning(
+                        'include-comment directive cannot have content only '
+                        'a filename argument',
+                        line=self.lineno)
+                ]
             rel_filename, filename = self.env.relfn2path(self.arguments[0])
             self.env.note_dependency(rel_filename)
 
@@ -136,18 +139,25 @@ class CmtIncDirective(Directive):
                     open(filename, 'rb'), codecinfo[2], codecinfo[3], 'strict')
                 extr.extract(f)
             except (IOError, OSError):
-                return [self.reporter.warning(
-                    'Include file %r not found or reading it failed' % filename,
-                    line=self.lineno)]
+                return [
+                    self.reporter.warning(
+                        'Include file %r not found or reading it failed' %
+                        filename,
+                        line=self.lineno)
+                ]
             except UnicodeError:
-                return [self.reporter.warning(
-                    'Encoding %r used for reading included file %r seems to '
-                    'be wrong, try giving an :encoding: option' %
-                    (encoding, filename))]
+                return [
+                    self.reporter.warning(
+                        'Encoding %r used for reading included file %r seems to '
+                        'be wrong, try giving an :encoding: option' %
+                        (encoding, filename))
+                ]
             except ExtractError as e:
-                return [self.reporter.warning(
-                    'Parsing error in %s : %s' %(filename, str(e)),
-                    line=self.lineno)]
+                return [
+                    self.reporter.warning(
+                        'Parsing error in %s : %s' % (filename, str(e)),
+                        line=self.lineno)
+                ]
             finally:
                 if f is not None:
                     f.close()
@@ -159,9 +169,12 @@ class CmtIncDirective(Directive):
             nested_parse_with_titles(self.state, self.content, node)
             return node.children
         else:
-            return [self.reporter.warning(
-                'include-comment directive needs a filename argument',
-                line=self.lineno)]
+            return [
+                self.reporter.warning(
+                    'include-comment directive needs a filename argument',
+                    line=self.lineno)
+            ]
+
 
 def setup(app):
     app.add_directive('include-comment', CmtIncDirective)
@@ -179,7 +192,7 @@ if __name__ == '__main__':
         with open(sys.argv[1], 'r') as f:
             ext.extract(f)
     except ExtractError as e:
-        print('Extraction error in external source file %r : %s'
-                    % (sys.argv[1], str(e)))
+        print('Extraction error in external source file %r : %s' %
+              (sys.argv[1], str(e)))
     for line in ext.content:
         print(line)
