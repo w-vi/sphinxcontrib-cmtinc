@@ -86,34 +86,41 @@ Example c header.h
     typedef struct my_struct_s
     {
         int id;
-        struct timeval t; 
+        struct timeval t;
         void *value;
      }  my_struct_t;
 
     /**
      .. c:function:: my_struct_t * connect(my_struct_t * m, const char *url)
- 
+
      Connect the client to the server given by *url*.
 
     */
     my_struct_t * connect(my_struct_t * m, const char *url);
 
-.. include-comment:: ../README.rst
 
 And to include whole code blocks without retyping them you may use the following syntax:
 
-.. code-block:: c   
+
+.. code-block:: c
 
 
     /**
-      Comment for the following code block
-      .. code-block:: c 
-      \code 
+     Code block description or comment
+      .. code-block:: c
+
+      \code
     */
     code_to_showcase();
     /**
       \endcode
     */
+
+
+**Result**:
+
+.. include-comment:: ../README.rst
+
 
 
 Configuration

@@ -11,7 +11,7 @@ comment-include is a reStructuredText_ directive to allow extraction of rst form
 
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 
-This extension adds the ``include-comment`` directive that automatically extracts 
+This extension adds the ``include-comment`` directive that automatically extracts
 the comments begining with ``/**`` and creates valid entries
 for the Sphinx_ writer used to generate the documentation.
 
@@ -24,7 +24,7 @@ requires = ['Sphinx>=1.0']
 
 setup(
     name='sphinxcontrib-cmtinc',
-    version='0.1',
+    version='0.2',
     url='http://packages.python.org/sphinxcontrib-cmtinc/',
     download_url='http://pypi.python.org/pypi/sphinxcontrib-cmtinc',
     license='BSD License',
