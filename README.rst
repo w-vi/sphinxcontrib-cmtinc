@@ -100,6 +100,21 @@ Example c header.h
 
 .. include-comment:: ../README.rst
 
+And to include whole code blocks without retyping them you may use the following syntax:
+
+.. code-block:: c   
+
+
+    /**
+      Comment for the following code block
+      .. code-block:: c 
+      \code 
+    */
+    code_to_showcase();
+    /**
+      \endcode
+    */
+
 
 Configuration
 -------------
