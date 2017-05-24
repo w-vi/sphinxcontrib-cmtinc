@@ -3,8 +3,8 @@
     sphinxcontrib.cmtinc
     ~~~~~~~~~~~~~~~~~~~~~~~
 
-    Extract comments from source files. 
- 
+    Extract comments from source files.
+
     See the README file for details.
 
     :author: Vilibald W. <vilibald@wvi.cz>
@@ -32,12 +32,12 @@ class Extractor(object):
     """
     Main extraction class
     """
-    
     def __init__(self):
         """
-        """    
+        """
         self.content = ViewList("",'comment')
         self.lineno = 0
+        self.is_multiline = False;
 
     def extract(self, source):
         """
@@ -48,15 +48,16 @@ class Extractor(object):
             self.lineno = self.lineno + 1
             l = l.strip()
             m = re_comment.match(l)
-            if m:
+
+            if (m):
                 self.comment(m.group(1), source)
-        
-    
+
+
     def comment(self, cur, source):
         """
         Read the whole comment and strip the stars.
 
-        CUR is currently read line and SOURCE is a fileobject 
+        CUR is currently read line and SOURCE is a fileobject
         with the source code.
         """
         self.content.append(cur.strip(), "comment")
@@ -66,22 +67,38 @@ class Extractor(object):
             line = line.strip()
 
             if re_cmtend.match(line):
-                break
+                if (not self.is_multiline):
+                    break
+                else:
+                    continue;
 
             if line.startswith("/*"):
-                raise ExtractError("%d: Nested comments are not supported yet."
-                                   % self.lineno)
+                if (not self.is_multiline):
+                    raise ExtractError("%d: Nested comments are not supported yet." % self.lineno)
+                else:
+                    continue;
 
             if line.startswith(".. "):
                 self.content.append(line, "comment")
                 continue
+
+            if line.startswith("\code"):
+                self.is_multiline = True
+                continue
+
+            if line.startswith("\endcode"):
+                self.is_multiline = False
+                continue
+
+            if line.startswith("/"):
+                line = "/" + line
 
             m = re_cmtnext.match(line)
             if m:
                 self.content.append("    " + m.group(1).strip(), "comment")
                 continue
 
-            self.content.append(line, "comment")
+            self.content.append(line.strip(), "comment")
 
 
         self.content.append('\n', "comment")
@@ -108,11 +125,11 @@ class CmtIncDirective(Directive):
                     'a filename argument', line=self.lineno)]
             rel_filename, filename = self.env.relfn2path(self.arguments[0])
             self.env.note_dependency(rel_filename)
-            
+
             extr = Extractor()
             f = None
             try:
-                encoding = self.options.get('encoding', 
+                encoding = self.options.get('encoding',
                                             self.env.config.source_encoding)
                 codecinfo = codecs.lookup(encoding)
                 f = codecs.StreamReaderWriter(
@@ -129,7 +146,7 @@ class CmtIncDirective(Directive):
                     (encoding, filename))]
             except ExtractError as e:
                 return [self.reporter.warning(
-                    'Parsing error in %s : %s' %(filename, str(e)), 
+                    'Parsing error in %s : %s' %(filename, str(e)),
                     line=self.lineno)]
             finally:
                 if f is not None:
@@ -143,9 +160,9 @@ class CmtIncDirective(Directive):
             return node.children
         else:
             return [self.reporter.warning(
-                'include-comment directive needs a filename argument', 
+                'include-comment directive needs a filename argument',
                 line=self.lineno)]
-        
+
 def setup(app):
     app.add_directive('include-comment', CmtIncDirective)
 
