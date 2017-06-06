@@ -86,13 +86,13 @@ Example c header.h
     typedef struct my_struct_s
     {
         int id;
-        struct timeval t; 
+        struct timeval t;
         void *value;
      }  my_struct_t;
 
     /**
      .. c:function:: my_struct_t * connect(my_struct_t * m, const char *url)
- 
+
      Connect the client to the server given by *url*.
 
     */
@@ -102,24 +102,53 @@ Example c header.h
 
 And to include whole code blocks without retyping them you may use the following syntax:
 
-.. code-block:: c   
+.. code-block:: c
 
 
     /**
       Comment for the following code block
-      .. code-block:: c 
-      \code 
+      .. code-block:: c
+      \code
     */
     code_to_showcase();
     /**
       \endcode
     */
 
+  or
+
+  .. code-block:: c
+
+
+      /**
+        Comment for the following code block
+        .. code-block:: c
+        \multicomment
+      */
+      code_to_showcase();
+      /**
+        \end_multicomment
+      */
+
+Every comment block "/** ... */" will be suffixed with a new line.
+
+If you do whish to have a more direct control over the identation
+you may use the * character as virtual line start
+.. code-block:: c
+
+
+    /**
+      This line will be on root level
+     *  this line has a identation of 2
+    */
+
+If you do want to keep the identation of your comments as is
+you may use the \\toggle_keepwhitespaces command in your included file.
 
 Configuration
 -------------
 
-None so far.
+The same as the Include Directive of Sphinx (http://docutils.sourceforge.net/docs/ref/rst/directives.html#include)
 
 TODO
 ====
