@@ -106,7 +106,7 @@ And to include whole code blocks without retyping them you may use the following
 
 
     /**
-     Code block description or comment
+      Comment for the following code block
       .. code-block:: c
 
       \code
@@ -116,6 +116,35 @@ And to include whole code blocks without retyping them you may use the following
       \endcode
     */
 
+  or
+
+  .. code-block:: c
+
+
+      /**
+        Comment for the following code block
+        .. code-block:: c
+        \multicomment
+      */
+      code_to_showcase();
+      /**
+        \end_multicomment
+      */
+
+Every comment block "/** ... */" will be suffixed with a new line.
+
+If you do whish to have a more direct control over the identation
+you may use the * character as virtual line start
+.. code-block:: c
+
+
+    /**
+      This line will be on root level
+     *  this line has a identation of 2
+    */
+
+If you do want to keep the identation of your comments as is
+you may use the \\toggle_keepwhitespaces command in your included file.
 
 **Result**:
 
@@ -126,7 +155,7 @@ And to include whole code blocks without retyping them you may use the following
 Configuration
 -------------
 
-None so far.
+The same as the Include Directive of Sphinx (http://docutils.sourceforge.net/docs/ref/rst/directives.html#include)
 
 TODO
 ====
