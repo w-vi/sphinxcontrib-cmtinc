@@ -107,6 +107,7 @@ And to include whole code blocks without retyping them you may use the following
 
     /**
       Comment for the following code block
+
       .. code-block:: c
 
       \code
@@ -123,6 +124,7 @@ And to include whole code blocks without retyping them you may use the following
 
       /**
         Comment for the following code block
+
         .. code-block:: c
         \multicomment
       */
@@ -135,6 +137,7 @@ Every comment block "/** ... */" will be suffixed with a new line.
 
 If you do whish to have a more direct control over the identation
 you may use the * character as virtual line start
+
 .. code-block:: c
 
 
