@@ -98,9 +98,9 @@ Example c header.h
     */
     my_struct_t * connect(my_struct_t * m, const char *url);
 
-.. include-comment:: ../README.rst
 
 And to include whole code blocks without retyping them you may use the following syntax:
+
 
 .. code-block:: c
 
@@ -108,6 +108,7 @@ And to include whole code blocks without retyping them you may use the following
     /**
       Comment for the following code block
       .. code-block:: c
+
       \code
     */
     code_to_showcase();
@@ -144,6 +145,12 @@ you may use the * character as virtual line start
 
 If you do want to keep the identation of your comments as is
 you may use the \\toggle_keepwhitespaces command in your included file.
+
+**Result**:
+
+.. include-comment:: ../README.rst
+
+
 
 Configuration
 -------------

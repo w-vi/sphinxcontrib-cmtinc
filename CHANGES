@@ -2,6 +2,11 @@
 
 This file describes user-visible changes between the extension versions.
 
+Version 0.2 (2017-05-24)
+------------------------
+
+* Add code blocks without retyping.
+
 Version 0.1 (2014-04-20)
 ------------------------
 
