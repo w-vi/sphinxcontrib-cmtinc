@@ -26,9 +26,18 @@ from docutils.parsers.rst.roles import set_classes
 from docutils.transforms import misc
 from docutils.statemachine import ViewList
 
-re_multilinecomment = re.compile("^\s*\/\*\*.*$")
-re_multilinecomment_end = re.compile("(.*)\*\/\ *$")
-re_whitespace_content = re.compile("^\s*(?:\*|#|(?:\/\/))?(\s*.*)$")
+COMMENT_STYLES = {
+        'C-style': {
+            'multiline': re.compile("^\s*\/\*\*.*$"),
+            'multiline_end': re.compile("(.*)\*\/\ *$"),
+            'whitespace_content': re.compile("^\s*(?:\*|#|(?:\/\/))?(\s*.*)$"),
+            },
+        'hash': {
+            'multiline': re.compile("^#:.*$"),
+            'multiline_end': re.compile("^#\..*$"),
+            'whitespace_content': re.compile("^\s*(?:# )?(\s*.*)$"),
+            },
+        }
 
 class IncludeComments(Directive):
 
@@ -48,7 +57,8 @@ class IncludeComments(Directive):
     required_arguments = 1
     optional_arguments = 0
     final_argument_whitespace = True
-    option_spec = {'literal': directives.flag,
+    option_spec = {'style': str,
+                   'literal': directives.flag,
                    'code': directives.unchanged,
                    'encoding': directives.encoding,
                    'tab-width': int,
@@ -72,7 +82,7 @@ class IncludeComments(Directive):
         for line in rawtext.split('\n'):
             ignoreLine = False;
 
-            m = re_multilinecomment.match(line)
+            m = self.comment_options['multiline'].match(line)
             if(m):
                 includeLine +=1
                 ignoreLine = True;
@@ -94,7 +104,7 @@ class IncludeComments(Directive):
                    identationfactor -= 1
                    ignoreLine = True;
 
-            m = re_multilinecomment_end.match(line)
+            m = self.comment_options['multiline_end'].match(line)
             if(m and includeLine > 0):
                 filterdText.append('\n','comment')
                 includeLine -=1
@@ -102,7 +112,7 @@ class IncludeComments(Directive):
 
             if (not ignoreLine and includeLine > 0):
                 if (identationfactor <= 0 and not keepwhitespaces):
-                    linecontent = re_whitespace_content.match(line).group(1)
+                    linecontent = self.comment_options['whitespace_content'].match(line).group(1)
                     filterdText.append('%s\n' % (linecontent),'comment')
                 else:
                     filterdText.append('%s%s\n' % ((' ' * identationfactor), line),'comment')
@@ -186,6 +196,13 @@ class IncludeComments(Directive):
                 raise self.severe('Problem with "end-before" option of "%s" '
                                   'directive:\nText not found.' % self.name)
             rawtext = rawtext[:before_index]
+
+        # Handle alternate comment styles
+        style = self.options.get('style', 'C-style')
+        if style not in COMMENT_STYLES:
+            raise self.severe('Cannot find comment style "%s", not in %s'
+                              % (style, COMMENT_STYLES.keys()))
+        self.comment_options = COMMENT_STYLES[style]
 
         rawtext = self.filterText(rawtext)
         #if (path == "../examples/neuropil_hydra.c"):
