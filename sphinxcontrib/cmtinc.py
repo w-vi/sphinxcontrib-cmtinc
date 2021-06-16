@@ -33,8 +33,8 @@ COMMENT_STYLES = {
             'whitespace_content': re.compile("^\s*(?:\*|#|(?:\/\/))?(\s*.*)$"),
             },
         'hash': {
-            'multiline': re.compile("^#:.*$"),
-            'multiline_end': re.compile("^#\..*$"),
+            'multiline': re.compile("^\s*(#:).*$"),
+            'multiline_end': re.compile("^\s*(#\.).*$"),
             'whitespace_content': re.compile("^\s*(?:# )?(\s*.*)$"),
             },
         }
