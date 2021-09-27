@@ -77,8 +77,9 @@ class IncludeComments(Directive):
     def filterText(self, rawtext):
         includeLine = 0
         filterdText =  ViewList("",'comment')
-        identationfactor = 0
+        identationstack = []
         keepwhitespaces = False
+        codeindentfactor = []
         for line in rawtext.split('\n'):
             ignoreLine = False;
 
@@ -95,13 +96,17 @@ class IncludeComments(Directive):
                 if (any(tag in line for tag in
                         ["\code", "\multicomment"])):
                    includeLine +=1
-                   identationfactor += 1
                    ignoreLine = True;
+
+                   match_whitespace = re.match('^\s*', line)
+                   leading_whitespace = len(match_whitespace.group(0)) if match_whitespace else 0
+                   identationstack.append(leading_whitespace)
+
 
                 if (any(tag in line for tag in
                         ["\endcode", "\end_multicomment"])):
                    includeLine -=1
-                   identationfactor -= 1
+                   identationstack.pop()
                    ignoreLine = True;
 
             m = self.comment_options['multiline_end'].match(line)
@@ -111,11 +116,12 @@ class IncludeComments(Directive):
                 ignoreLine = True;
 
             if (not ignoreLine and includeLine > 0):
-                if (identationfactor <= 0 and not keepwhitespaces):
+                indent = sum(identationstack)
+                if (indent <= 0 and not keepwhitespaces):
                     linecontent = self.comment_options['whitespace_content'].match(line).group(1)
                     filterdText.append('%s\n' % (linecontent),'comment')
                 else:
-                    filterdText.append('%s%s\n' % ((' ' * identationfactor), line),'comment')
+                    filterdText.append('%s%s\n' % ((' ' * indent), line),'comment')
             #else:
                 #filterdText.append( 'D%d %s%s\n' % (includeLine, identation, line),'comment')
         if (includeLine != 0):
