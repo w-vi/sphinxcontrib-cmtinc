@@ -93,13 +93,12 @@ class IncludeComments(Directive):
                     ignoreLine = True
                     keepwhitespaces = not keepwhitespaces
 
-                if (any(tag in line for tag in
-                        ["\code", "\multicomment"])):
+                match_code_tag = re.search(r'(?P<whitespace>\s*)\\(?P<tag>code|multicomment)', line)
+                if match_code_tag:
                    includeLine +=1
                    ignoreLine = True;
 
-                   match_whitespace = re.match('^\s*', line)
-                   leading_whitespace = len(match_whitespace.group(0)) if match_whitespace else 0
+                   leading_whitespace = len(match_code_tag.group('whitespace'))
                    identationstack.append(leading_whitespace)
 
 
