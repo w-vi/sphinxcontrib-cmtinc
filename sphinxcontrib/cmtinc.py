@@ -26,6 +26,9 @@ from docutils.parsers.rst.roles import set_classes
 from docutils.transforms import misc
 from docutils.statemachine import ViewList
 
+#from sphinx.util import logging
+#logger = logging.getLogger(__name__)
+
 COMMENT_STYLES = {
         'C-style': {
             'multiline': re.compile("^\s*\/\*\*.*$"),
@@ -80,6 +83,7 @@ class IncludeComments(Directive):
         identationstack = []
         keepwhitespaces = False
         codeindentfactor = []
+        codeparamarker = False # Marker for the \codepara tag
         for line in rawtext.split('\n'):
             ignoreLine = False;
 
@@ -93,7 +97,7 @@ class IncludeComments(Directive):
                     ignoreLine = True
                     keepwhitespaces = not keepwhitespaces
 
-                match_code_tag = re.search(r'(?P<whitespace>\s*)\\(?P<tag>code|multicomment)', line)
+                match_code_tag = re.search(r'(?P<whitespace>\s*)\\(?P<tag>(code|codepara|multicomment)\b)', line)
                 if match_code_tag:
                    includeLine +=1
                    ignoreLine = True;
@@ -101,6 +105,10 @@ class IncludeComments(Directive):
                    leading_whitespace = len(match_code_tag.group('whitespace'))
                    identationstack.append(leading_whitespace)
 
+                   # When we match \codepara, that includes lines until the next blank, with no
+                   # matching marker needed.
+                   if match_code_tag.group('tag') == 'codepara':
+                       codeparamarker = True
 
                 if (any(tag in line for tag in
                         ["\endcode", "\end_multicomment"])):
@@ -121,6 +129,13 @@ class IncludeComments(Directive):
                     filterdText.append('%s\n' % (linecontent),'comment')
                 else:
                     filterdText.append('%s%s\n' % ((' ' * indent), line),'comment')
+
+                # If codepara mode is on, then we turn it off when we hit blank line content.
+                if codeparamarker and len(line.strip()) == 0:
+                    codeparamarker = False
+                    identationstack.pop()
+                    includeLine -= 1
+
             #else:
                 #filterdText.append( 'D%d %s%s\n' % (includeLine, identation, line),'comment')
         if (includeLine != 0):
